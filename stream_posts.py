@@ -5,7 +5,7 @@ import boto3
 
 from generar_post import generar_post
 
-STREAM_NAME = "social-stream"
+STREAM_NAME = "social-trends-stream"
 
 kinesis = boto3.client(
     "kinesis",
