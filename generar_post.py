@@ -1,6 +1,7 @@
 import random
 import uuid
 from datetime import datetime, timedelta
+from typing import Optional
 
 PALABRAS_ES = [
     "increíble", "viaje", "comida", "tecnología", "música", "deporte",
@@ -369,7 +370,7 @@ _GENERADORES = {
     "Instagram": _post_instagram,
 }
 
-def generar_post(red_social: str | None = None) -> dict:
+def generar_post(red_social: Optional[str] = None) -> dict:
     if red_social is None:
         red_social = random.choice(list(_GENERADORES.keys()))
 
