@@ -1,0 +1,6 @@
+*.zip
+__pycache__/
+*.pyc
+.env
+langdetect_pkg/
+profanity_pkg/
