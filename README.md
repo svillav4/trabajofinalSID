@@ -9,29 +9,10 @@
 
 Este proyecto implementa una plataforma de datos analítica end-to-end para el análisis de tendencias en redes sociales (Instagram, Twitter, Reddit), aplicando los principios de ingesta, transformación y análisis de datos vistos durante el semestre. El pipeline cubre desde la generación simulada de posts hasta la visualización de métricas de engagement, viralidad, toxicidad y tendencias por red social.
 
-El flujo completo es:
+El pipeline y diagrama de arquitectura completo es:
 
-```text
-generar_post.py / stream_posts.py
-↓
-Amazon Kinesis Data Streams (social-trends-stream)
-↓
-Amazon Kinesis Data Firehose (buffer 60s)
-↓
-S3 raw/social_posts/
-↓
-AWS Glue Job: glue_transform_raw_to_curated
-↓
-S3 curated/social_posts/
-↓
-AWS Glue Job: glue_customer_features
-↓
-S3 features/social_posts/
-↓
-AWS Glue Crawler → Glue Data Catalog → Amazon Athena
-↓
-Consultas SQL exportadas como CSV → Power BI Dashboard
-```
+<img width="852" height="893" alt="image" src="https://github.com/user-attachments/assets/a6f4f0b8-c895-4850-a2d2-0ba00e52dea6" />
+
 
 ---
 
