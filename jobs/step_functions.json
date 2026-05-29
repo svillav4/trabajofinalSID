@@ -1,0 +1,97 @@
+{
+  "Comment": "Pipeline secuencial: raw → staging → curated → features",
+  "QueryLanguage": "JSONata",
+  "StartAt": "Raw to Staging",
+  "States": {
+    "Raw to Staging": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::glue:startJobRun.sync",
+      "Arguments": {
+        "JobName": "glue_transform_raw_to_curated_a"
+      },
+      "Next": "Staging to Curated",
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "IntervalSeconds": 30,
+          "MaxAttempts": 2,
+          "BackoffRate": 2
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "Next": "Pipeline Failed",
+          "Comment": "Error en Raw to Staging"
+        }
+      ]
+    },
+    "Staging to Curated": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::glue:startJobRun.sync",
+      "Arguments": {
+        "JobName": "glue_transform_raw_to_curated"
+      },
+      "Next": "Curated to Features",
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "IntervalSeconds": 30,
+          "MaxAttempts": 2,
+          "BackoffRate": 2
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "Next": "Pipeline Failed",
+          "Comment": "Error en Staging to Curated"
+        }
+      ]
+    },
+    "Curated to Features": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::glue:startJobRun.sync",
+      "Arguments": {
+        "JobName": "glue_transform_curated_to_features"
+      },
+      "Next": "Pipeline Succeeded",
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "IntervalSeconds": 30,
+          "MaxAttempts": 2,
+          "BackoffRate": 2
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "Next": "Pipeline Failed",
+          "Comment": "Error en Curated to Features"
+        }
+      ]
+    },
+    "Pipeline Succeeded": {
+      "Type": "Succeed",
+      "Comment": "Todos los jobs finalizaron correctamente"
+    },
+    "Pipeline Failed": {
+      "Type": "Fail",
+      "Error": "PipelineError",
+      "Cause": "Uno o más jobs de Glue fallaron. Revisar logs en CloudWatch."
+    }
+  }
+}
